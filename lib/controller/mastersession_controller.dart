@@ -4,6 +4,7 @@ import 'package:nuestra_historia/models/usuario_model.dart';
 
 class MasterSessionController extends GetxController {
   var currentUsuario = Usuario().obs;
+  var currentUsuarioPareja = Usuario().obs;
   var currentUsuarioTemp = Usuario().obs;
 
   void listenToUserChanges(String userId) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nuestra_historia/controller/auth_controller.dart';
 import 'package:nuestra_historia/controller/mastersession_controller.dart';
+import 'package:nuestra_historia/screens/grupo/codigo_grupo_screen.dart';
 import 'package:nuestra_historia/screens/widgets/buttons.dart';
 import 'package:nuestra_historia/screens/widgets/widgets.dart';
 
@@ -20,7 +21,12 @@ class Page2 extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Obx(
-              () => CardHeader(usuario: mMasterSession.currentUsuario.value),
+              () => CardHeader(
+                usuario: mMasterSession.currentUsuario.value,
+                ontap2: () {
+                  Get.to(() => CodigoGrupoScreen());
+                },
+              ),
             ),
             CustomButton(
               text: 'Cerrar',

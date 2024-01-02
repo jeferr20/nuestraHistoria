@@ -6,7 +6,9 @@ class CustomTextField extends StatelessWidget {
   final String text;
   final IconData? prefixIcon;
   final Function()? onTap;
+  final Function(String)? onChanged;
   final bool enableInput;
+  final int? maxLength;
   const CustomTextField({
     super.key,
     required this.text,
@@ -14,6 +16,8 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.onTap,
     this.enableInput = true,
+    this.onChanged,
+    this.maxLength,
   });
 
   @override
@@ -23,11 +27,15 @@ class CustomTextField extends StatelessWidget {
       child: AbsorbPointer(
         absorbing: !enableInput,
         child: TextField(
+          maxLength: maxLength,
+          onChanged: onChanged,
           controller: controller,
+          textAlign: maxLength == 1 ? TextAlign.center : TextAlign.justify,
           cursorColor: Colors.deepOrange,
           decoration: InputDecoration(
+            counterText: '',
             hintText: text,
-            contentPadding: const EdgeInsets.all(20),
+            contentPadding: EdgeInsets.all(maxLength != 1 ? 20 : 10),
             hintStyle: GoogleFonts.roboto(
               fontSize: 15,
               color: Colors.white,

@@ -74,6 +74,59 @@ void customDialogFailed(String titulo, String descripcion) {
   );
 }
 
+void customDialogExito(
+    String titulo, String descripcion, Function()? onPressed) {
+  showDialog(
+    context: Get.context!,
+    builder: (BuildContext context) {
+      return Dialog(
+        alignment: Alignment.center,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                height: 15,
+              ),
+              Text(titulo,
+                  style: GoogleFonts.roboto(
+                      fontSize: 27,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.green)),
+              const SizedBox(
+                height: 20,
+              ),
+              Image.asset(
+                'assets/icons/comprobado.png',
+                width: 100,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(descripcion,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.roboto(
+                      fontSize: 16, fontWeight: FontWeight.w500)),
+              const SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                  width: Get.width * 0.5,
+                  child: CustomButtonColor(
+                      color: Colors.green,
+                      buttonText: 'Aceptar',
+                      onPressed: onPressed))
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
 void customDialogEmail(String titulo, String descripcion, Function()? onPressed,
     Function()? onPressed2) {
   showDialog(

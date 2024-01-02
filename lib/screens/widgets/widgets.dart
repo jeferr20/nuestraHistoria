@@ -6,10 +6,12 @@ import 'package:nuestra_historia/models/usuario_model.dart';
 class CardHeader extends StatefulWidget {
   final Usuario usuario;
   final Usuario? pareja;
+  final Function()? ontap2;
   const CardHeader({
     super.key,
     required this.usuario,
     this.pareja,
+    this.ontap2,
   });
 
   @override
@@ -77,12 +79,15 @@ class _CardHeaderState extends State<CardHeader> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: Get.width * 0.25,
-                  height: Get.width * 0.25,
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(100)),
+                GestureDetector(
+                  onTap: widget.ontap2,
+                  child: Container(
+                    width: Get.width * 0.25,
+                    height: Get.width * 0.25,
+                    decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(100)),
+                  ),
                 ),
                 const SizedBox(
                   height: 8,

@@ -27,28 +27,33 @@ class AuthController extends GetxController {
     if (user == null) {
       Get.offAll(() => const LoginScreen());
     } else {
-      final usuario = await getUsuario();
-      bool veri = user.emailVerified;
-      if (veri) {
-        if (usuario != null && !usuario.isVerified) {
-          await actualizarUsuarioVerificado(usuario);
+      final usuario = await getUsuario(auth.currentUser!.uid);
+      if (usuario!.id != "") {
+        bool veri = user.emailVerified;
+        if (veri) {
+          if (!usuario.isVerified) {
+            await actualizarUsuarioVerificado(usuario);
+          }
+          mMasterSession.listenToUserChanges(user.uid);
+          if (usuario.parejaId != null) {
+            mMasterSession.listenToUserChanges(usuario.parejaId!);
+          }
+          mMasterSession.currentUsuario.value = usuario;
+          Get.offAll(() => const HomeScreen());
+        } else {
+          customDialogEmail(
+            'Error',
+            'Verifique su correo',
+            () async {
+              await user.reload();
+              await Future.delayed(const Duration(milliseconds: 10));
+              await _setInitialScreen(auth.currentUser);
+            },
+            () {
+              Get.back();
+            },
+          );
         }
-        mMasterSession.listenToUserChanges(user.uid);
-        mMasterSession.currentUsuario.value = usuario!;
-        Get.offAll(() => const HomeScreen());
-      } else {
-        customDialogEmail(
-          'Error',
-          'Verifique su correo',
-          () async {
-            await user.reload();
-            await Future.delayed(const Duration(milliseconds: 10));
-            await _setInitialScreen(auth.currentUser);
-          },
-          () {
-            Get.to(() => const LoginScreen());
-          },
-        );
       }
     }
   }
@@ -122,15 +127,14 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<Usuario?> getUsuario() async {
+  Future<Usuario?> getUsuario(String id) async {
     try {
       final currentUser = auth.currentUser;
       if (currentUser != null) {
-        final query =
-            await firestore.collection('usuarios').doc(currentUser.uid).get();
+        final query = await firestore.collection('usuarios').doc(id).get();
         if (query.exists) {
           Map<String, dynamic> data = query.data() as Map<String, dynamic>;
-          data['id'] = currentUser.uid;
+          data['id'] = id;
           return Usuario.fromMap(data);
         } else {
           return null;

@@ -12,6 +12,7 @@ class Usuario {
   String? password;
   String? confirmPassword;
   String? relacionId;
+  String? parejaId;
 
   Usuario(
       {this.id = "",
@@ -26,7 +27,8 @@ class Usuario {
       this.urlPerfil,
       this.password,
       this.confirmPassword,
-      this.relacionId});
+      this.relacionId,
+      this.parejaId});
 
   Map<String, dynamic> toMap() {
     return {
@@ -39,6 +41,8 @@ class Usuario {
       'fechaNacimiento': fechaNacimiento,
       'isVerified': isVerified,
       'urlPerfil': urlPerfil,
+      'relacionId': relacionId,
+      'parejaId': parejaId,
     };
   }
 
@@ -55,6 +59,7 @@ class Usuario {
       isVerified: json['isVerified'] ?? false,
       urlPerfil: json['urlPerfil'] ?? "",
       relacionId: json['relacionId'] ?? "",
+      parejaId: json['parejaId'] ?? "",
     );
   }
 }
