@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "642499439187",
+    "project_id": "nuestrahistoria-2f33c",
+    "storage_bucket": "nuestrahistoria-2f33c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642499439187:android:97874dacd8fcb9a8ffb4a6",
+        "android_client_info": {
+          "package_name": "com.example.nuestra_historia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbG5ZB7K6aL6BrzM_3H_grl9dSE3weku8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
