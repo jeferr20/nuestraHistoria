@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:nuestra_historia/controller/auth_controller.dart';
 import 'package:nuestra_historia/controller/mastersession_controller.dart';
 import 'package:nuestra_historia/screens/login/listas.dart';
-import 'package:nuestra_historia/screens/utils/calendar_util.dart';
+import 'package:nuestra_historia/utils/calendar_util.dart';
 import 'package:nuestra_historia/screens/widgets/buttons.dart';
 import 'package:nuestra_historia/screens/widgets/dropdows.dart';
 import 'package:nuestra_historia/screens/widgets/textfield.dart';
@@ -57,11 +57,24 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomTextField(text: "Nombres", controller: nombresController),
                 CustomTextField(
-                    text: "Apellidos", controller: apellidosController),
-                CustomTextField(text: "Celular", controller: celularController),
+                    colorFondo: Colors.black38,
+                    fuente: Colors.white,
+                    text: "Nombres",
+                    controller: nombresController),
                 CustomTextField(
+                    colorFondo: Colors.black38,
+                    fuente: Colors.white,
+                    text: "Apellidos",
+                    controller: apellidosController),
+                CustomTextField(
+                    colorFondo: Colors.black38,
+                    fuente: Colors.white,
+                    text: "Celular",
+                    controller: celularController),
+                CustomTextField(
+                  colorFondo: Colors.black38,
+                  fuente: Colors.white,
                   text: "Fecha Nacimiento",
                   controller: fechaController,
                   enableInput: false,
@@ -70,6 +83,8 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                   },
                 ),
                 CustomTextField(
+                  colorFondo: Colors.black38,
+                  fuente: Colors.white,
                   text: "Edad",
                   controller: edadController,
                   enableInput: false,
@@ -94,6 +109,7 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                         val?.celular = celularController.text.toString();
                         val?.fechaNacimiento = fechaController.text.toString();
                         val?.edad = calcularEdad(selectedDate);
+                        val?.signoz = obtenerSignoZodiacal(selectedDate);
                         val?.genero = genero!;
                       });
                       // Get.to(() => VerificationScreen());

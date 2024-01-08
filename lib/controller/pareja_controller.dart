@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:nuestra_historia/controller/auth_controller.dart';
@@ -23,11 +25,12 @@ class ParejaController extends GetxController {
         hideLoadingDialog();
       } else {
         hideLoadingDialog();
-        customDialogFailed('Error', 'Ya tienes un codigo pendiente');
+        customDialogFailed(
+            'Error', 'Ya tienes un codigo pendiente', () => {Get.back()});
       }
     } catch (error) {
       hideLoadingDialog();
-      customDialogFailed('Error', 'Hubo un error: $error');
+      customDialogFailed('Error', 'Hubo un error: $error', () => {Get.back()});
     }
   }
 
@@ -52,7 +55,7 @@ class ParejaController extends GetxController {
             //user
             final pareja = await authController.getUsuario(user1Id);
             mMasterSession.currentUsuarioPareja.value = pareja!;
-            mMasterSession.listenToUserChanges(pareja.id);
+            mMasterSession.listenToUserChangesPareja(pareja.id);
             await updateRelacionIDUsuario(
                 mMasterSession.currentUsuario.value.id, document.id, pareja.id);
             await updateRelacionIDUsuario(pareja.id, document.id,
@@ -64,16 +67,33 @@ class ParejaController extends GetxController {
           });
         } else {
           hideLoadingDialog();
-          customDialogFailed('Error', 'Codigo incorrecto');
+          customDialogFailed('Error', 'Codigo incorrecto', () => {Get.back()});
         }
       } else {
         hideLoadingDialog();
-        customDialogFailed(
-            'Error', 'Ocurrio un problema al unirse a la relacion');
+        customDialogFailed('Error',
+            'Ocurrio un problema al unirse a la relacion', () => {Get.back()});
       }
     } catch (error) {
       hideLoadingDialog();
-      customDialogFailed('Error', 'Hubo un error: $error');
+      customDialogFailed('Error', 'Hubo un error: $error', () => {Get.back()});
+    }
+  }
+
+  Future<void> guardarAniversario(String codeRelacion, String fecha) async {
+    showLoadingDialog();
+    try {
+      await firestore
+          .collection('parejas')
+          .doc(codeRelacion)
+          .update({'aniversario': fecha});
+      hideLoadingDialog();
+      customDialogExito('Felicidad', 'Se guardo la fecha', () {
+        Get.to(() => const HomeScreen());
+      });
+    } catch (error) {
+      hideLoadingDialog();
+      rethrow;
     }
   }
 
@@ -83,6 +103,25 @@ class ParejaController extends GetxController {
       await firestore.collection('parejas').add(data);
     } catch (error) {
       rethrow;
+    }
+  }
+
+  Future<void> guardarCitasEnFirestore(String jsonCitas) async {
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Convierte el JSON en un mapa de Dart
+      Map<String, dynamic> mapaCitas = json.decode(jsonCitas);
+
+      // Recorre las citas y las guarda en la colección "Citas" con un documento para cada cita
+      for (Map<String, dynamic> cita in mapaCitas["citas"]) {
+        await firestore.collection("citas").add({
+          "cita": cita["cita"],
+          "categoria": cita["categoria"],
+        });
+      }
+    } catch (e) {
+      print("Error al guardar citas en Firestore: $e");
     }
   }
 

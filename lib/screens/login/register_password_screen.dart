@@ -131,17 +131,23 @@ class _RegisterPasswordScreenState extends State<RegisterPasswordScreen> {
                   if (passwordController.text.isEmpty ||
                       confirmPasswordController.text.isEmpty) {
                     customDialogFailed(
-                        "Error", "Todos los campos son obligatorios");
+                        "Error",
+                        "Todos los campos son obligatorios",
+                        () => {Get.back()});
                   } else if (isEightCharacters.isFalse ||
                       hasNumber.isFalse ||
                       hasSpecialCharacter.isFalse ||
                       hasUppercaseLetter.isFalse) {
-                    customDialogFailed("Error",
-                        "La contraseña no cumple con los requisitos de seguridad");
+                    customDialogFailed(
+                        "Error",
+                        "La contraseña no cumple con los requisitos de seguridad",
+                        () => {Get.back()});
                   } else if (passwordController.text !=
                       confirmPasswordController.text) {
                     customDialogFailed(
-                        "Error", "Las contraseñas ingresadas no coinciden");
+                        "Error",
+                        "Las contraseñas ingresadas no coinciden",
+                        () => {Get.back()});
                   } else {
                     mMasterSession.currentUsuarioTemp.update((val) {
                       val?.password = passwordController.text.toString();

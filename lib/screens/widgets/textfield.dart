@@ -9,6 +9,8 @@ class CustomTextField extends StatelessWidget {
   final Function(String)? onChanged;
   final bool enableInput;
   final int? maxLength;
+  final Color colorFondo;
+  final Color fuente;
   const CustomTextField({
     super.key,
     required this.text,
@@ -18,6 +20,8 @@ class CustomTextField extends StatelessWidget {
     this.enableInput = true,
     this.onChanged,
     this.maxLength,
+    required this.colorFondo,
+    required this.fuente,
   });
 
   @override
@@ -38,19 +42,19 @@ class CustomTextField extends StatelessWidget {
             contentPadding: EdgeInsets.all(maxLength != 1 ? 20 : 10),
             hintStyle: GoogleFonts.roboto(
               fontSize: 15,
-              color: Colors.white,
+              color: fuente,
             ),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
                 borderSide: BorderSide.none),
             prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-            prefixIconColor: Colors.white,
-            fillColor: Colors.white.withOpacity(0.3),
+            prefixIconColor: fuente,
+            fillColor: colorFondo,
             filled: true,
           ),
           style: GoogleFonts.roboto(
             fontSize: 15,
-            color: Colors.white,
+            color: fuente,
           ),
         ),
       ),

@@ -7,6 +7,7 @@ class Usuario {
   String genero;
   int edad = 0;
   String fechaNacimiento;
+  String signoz;
   bool isVerified;
   String? urlPerfil;
   String? password;
@@ -23,6 +24,7 @@ class Usuario {
       this.genero = "",
       this.edad = 0,
       this.fechaNacimiento = "",
+      this.signoz = "",
       this.isVerified = false,
       this.urlPerfil,
       this.password,
@@ -39,6 +41,7 @@ class Usuario {
       'genero': genero,
       'edad': edad,
       'fechaNacimiento': fechaNacimiento,
+      'signoz': signoz,
       'isVerified': isVerified,
       'urlPerfil': urlPerfil,
       'relacionId': relacionId,
@@ -57,6 +60,7 @@ class Usuario {
       edad: json['edad'] ?? 0,
       fechaNacimiento: json['fechaNacimiento'] ?? "",
       isVerified: json['isVerified'] ?? false,
+      signoz: json['signoz'] ?? "",
       urlPerfil: json['urlPerfil'] ?? "",
       relacionId: json['relacionId'] ?? "",
       parejaId: json['parejaId'] ?? "",

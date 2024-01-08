@@ -8,7 +8,12 @@ class Page3 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.orange,
-      body: Center(child: CustomTextField(text: 'Hola3')),
+      body: Center(
+          child: CustomTextField(
+        text: 'Hola3',
+        colorFondo: Colors.black38,
+        fuente: Colors.white,
+      )),
     );
   }
 }

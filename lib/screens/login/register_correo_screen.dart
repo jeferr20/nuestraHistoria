@@ -31,6 +31,8 @@ class RegisterCorreoScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 CustomTextField(
+                  colorFondo: Colors.black38,
+                  fuente: Colors.white,
                   controller: mailController,
                   text: 'Correo Electronico',
                   prefixIcon: Icons.mail,
@@ -41,8 +43,10 @@ class RegisterCorreoScreen extends StatelessWidget {
                     text: 'SIGUIENTE',
                     onPressed: () async {
                       if (mailController.text.isEmpty) {
-                        customDialogFailed("Error",
-                            "El campo correo electrónico es obligatorio");
+                        customDialogFailed(
+                            "Error",
+                            "El campo correo electrónico es obligatorio",
+                            () => {Get.back()});
                       } else {
                         mMasterSession.currentUsuarioTemp.update((val) {
                           val?.correo = mailController.text.toString();

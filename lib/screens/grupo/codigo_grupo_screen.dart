@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nuestra_historia/controller/pareja_controller.dart';
-import 'package:nuestra_historia/screens/utils/codigo_grupo.dart';
+import 'package:nuestra_historia/utils/codigo_grupo.dart';
 import 'package:nuestra_historia/screens/widgets/buttons.dart';
 import 'package:nuestra_historia/screens/widgets/dialog.dart';
 import 'package:nuestra_historia/screens/widgets/textfield.dart';
@@ -44,8 +44,8 @@ class _CodigoGrupoScreenState extends State<CodigoGrupoScreen> {
                     });
                     await parejaController.saveCodePareja(generatedCode);
                   } else {
-                    customDialogFailed(
-                        'Error', 'Ya tienes un codigo pendiente');
+                    customDialogFailed('Error', 'Ya tienes un codigo pendiente',
+                        () => {Get.back()});
                   }
                 },
               ),
@@ -69,6 +69,8 @@ class _CodigoGrupoScreenState extends State<CodigoGrupoScreen> {
                             width: Get.width * 0.13,
                             height: Get.width * 0.20,
                             child: CustomTextField(
+                              colorFondo: Colors.black38,
+                              fuente: Colors.white,
                               maxLength: 1,
                               text: generatedCode[index],
                               enableInput: false,
@@ -88,6 +90,8 @@ class _CodigoGrupoScreenState extends State<CodigoGrupoScreen> {
                                 width: Get.width * 0.13,
                                 height: Get.width * 0.20,
                                 child: CustomTextField(
+                                  colorFondo: Colors.black38,
+                                  fuente: Colors.white,
                                   text: "",
                                   maxLength: 1,
                                   controller: controllers[index],
@@ -112,7 +116,9 @@ class _CodigoGrupoScreenState extends State<CodigoGrupoScreen> {
                           await parejaController.entrarRelacion(code);
                         } else {
                           customDialogFailed(
-                              'Error', 'Ya tienes un codigo pendiente');
+                              'Error',
+                              'Ya tienes un codigo pendiente',
+                              () => {Get.back()});
                         }
                       },
                     )

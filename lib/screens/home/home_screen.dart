@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:nuestra_historia/screens/home/calendario_screen.dart';
 import 'package:nuestra_historia/screens/home/screen1%20copy%202.dart';
 import 'package:nuestra_historia/screens/home/screen1%20copy.dart';
-import 'package:nuestra_historia/screens/home/screen1.dart';
+import 'package:nuestra_historia/screens/home/cien_citas_screen.dart';
 import 'package:nuestra_historia/screens/widgets/navegation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
           child: IndexedStack(
         index: selectedItemPosition,
-        children: [Page1(), Page2(), Page3()],
+        children: [CienCitasScreen(), Page2(), Page3(), CalendarioScreen()],
       )),
     );
   }

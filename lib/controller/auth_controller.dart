@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:nuestra_historia/controller/mastersession_controller.dart';
+import 'package:nuestra_historia/models/relacion_model.dart';
 import 'package:nuestra_historia/models/usuario_model.dart';
 import 'package:nuestra_historia/screens/home/home_screen.dart';
 import 'package:nuestra_historia/screens/login/login_screen.dart';
@@ -28,17 +29,33 @@ class AuthController extends GetxController {
       Get.offAll(() => const LoginScreen());
     } else {
       final usuario = await getUsuario(auth.currentUser!.uid);
-      if (usuario!.id != "") {
+      Usuario? pareja;
+      Relacion? relacion;
+      if (usuario!.parejaId != "") pareja = await getUsuario(usuario.parejaId!);
+      if (usuario.relacionId != "") {
+        relacion = await getRelacion(usuario.relacionId!);
+      }
+      mMasterSession.currentUsuario.value = usuario;
+      mMasterSession.listenToUserChanges(
+        user.uid,
+      );
+      if (pareja != null && relacion != null) {
+        mMasterSession.currentUsuarioPareja.value = pareja;
+        mMasterSession.listenToUserChangesPareja(
+          pareja.id,
+        );
+        mMasterSession.currentRelacion.value = relacion;
+        mMasterSession.listenToRelacionChanges(
+          relacion.id,
+        );
+      }
+
+      if (usuario.id != "") {
         bool veri = user.emailVerified;
         if (veri) {
           if (!usuario.isVerified) {
             await actualizarUsuarioVerificado(usuario);
           }
-          mMasterSession.listenToUserChanges(user.uid);
-          if (usuario.parejaId != null) {
-            mMasterSession.listenToUserChanges(usuario.parejaId!);
-          }
-          mMasterSession.currentUsuario.value = usuario;
           Get.offAll(() => const HomeScreen());
         } else {
           customDialogEmail(
@@ -65,7 +82,8 @@ class AuthController extends GetxController {
       hideLoadingDialog();
     } catch (error) {
       hideLoadingDialog();
-      customDialogFailed('Error', 'Hubo un error al iniciar sesion: $error');
+      customDialogFailed('Error', 'Hubo un error al iniciar sesion: $error',
+          () => {Get.back()});
     }
   }
 
@@ -78,7 +96,8 @@ class AuthController extends GetxController {
       await sendEmailVerif();
     } catch (error) {
       hideLoadingDialog();
-      customDialogFailed('Error', 'Hubo un error al crear el usuario: $error');
+      customDialogFailed('Error', 'Hubo un error al crear el usuario: $error',
+          () => {Get.back()});
     }
   }
 
@@ -86,7 +105,8 @@ class AuthController extends GetxController {
     try {
       await auth.signOut();
     } catch (error) {
-      customDialogFailed('Error', 'Hubo un error al cerrar la sesión: $error');
+      customDialogFailed('Error', 'Hubo un error al cerrar la sesión: $error',
+          () => {Get.back()});
     }
   }
 
@@ -136,6 +156,26 @@ class AuthController extends GetxController {
           Map<String, dynamic> data = query.data() as Map<String, dynamic>;
           data['id'] = id;
           return Usuario.fromMap(data);
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<Relacion?> getRelacion(String id) async {
+    try {
+      final currentUser = auth.currentUser;
+      if (currentUser != null) {
+        final query = await firestore.collection('parejas').doc(id).get();
+        if (query.exists) {
+          Map<String, dynamic> data = query.data() as Map<String, dynamic>;
+          data['id'] = id;
+          return Relacion.fromMap(data);
         } else {
           return null;
         }

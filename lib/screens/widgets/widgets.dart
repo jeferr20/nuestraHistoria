@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nuestra_historia/models/cita_model.dart';
+import 'package:nuestra_historia/models/relacion_model.dart';
 import 'package:nuestra_historia/models/usuario_model.dart';
+import 'package:nuestra_historia/utils/calendar_util.dart';
+import 'package:nuestra_historia/styles/colors.dart';
 
 class CardHeader extends StatefulWidget {
   final Usuario usuario;
   final Usuario? pareja;
+  final Relacion? relacion;
   final Function()? ontap2;
   const CardHeader({
     super.key,
     required this.usuario,
     this.pareja,
     this.ontap2,
+    this.relacion,
   });
 
   @override
@@ -63,7 +69,7 @@ class _CardHeaderState extends State<CardHeader> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '100 dias',
+                  "${calcularDiasTranscurridos(widget.relacion!.aniversario)} dias",
                   style: GoogleFonts.roboto(fontSize: 18),
                 ),
                 Text(
@@ -71,7 +77,7 @@ class _CardHeaderState extends State<CardHeader> {
                   style: GoogleFonts.roboto(fontSize: 15),
                 ),
                 Text(
-                  '10/09/2002',
+                  widget.relacion!.aniversario,
                   style: GoogleFonts.roboto(fontSize: 17),
                 )
               ],
@@ -97,6 +103,97 @@ class _CardHeaderState extends State<CardHeader> {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ItemCita extends StatelessWidget {
+  final Cita cita;
+  final Function()? onTap;
+  final bool showCheck;
+  const ItemCita({
+    super.key,
+    required this.cita,
+    this.onTap,
+    required this.showCheck,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Color? color;
+    String? imagen;
+    switch (cita.categoria) {
+      case "Citas clásicas":
+        color = ColoresCitas.citasClasicas;
+        imagen = 'assets/categories/reloj.png';
+        break;
+      case "Aventuras al aire libre":
+        color = ColoresCitas.aventurasAireLibre;
+        imagen = 'assets/categories/reloj.png';
+        break;
+      case "Citas culturales":
+        color = ColoresCitas.citasCulturales;
+        imagen = 'assets/categories/reloj.png';
+        break;
+    }
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 4.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Container(
+          height: 70,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 8,
+              ),
+              Container(
+                height: 35,
+                width: 35,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10), color: color),
+                child: Image.asset(
+                  imagen!,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              Expanded(
+                child: SizedBox(
+                  width: Get.width - 160,
+                  child: Text(
+                    cita.cita,
+                    style: GoogleFonts.roboto(
+                        fontSize: 15.0, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+              if (showCheck) ...{
+                const SizedBox(
+                  width: 4,
+                ),
+                SizedBox(
+                  height: 40,
+                  width: 30,
+                  child: Image.asset('assets/categories/check.png'),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+              }
+            ],
+          ),
         ),
       ),
     );

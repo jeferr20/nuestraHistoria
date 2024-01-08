@@ -19,7 +19,8 @@ Future<void> hideLoadingDialog() async {
   Navigator.of(Get.overlayContext!).pop();
 }
 
-void customDialogFailed(String titulo, String descripcion) {
+void customDialogFailed(
+    String titulo, String descripcion, Function()? onPressed) {
   showDialog(
     context: Get.context!,
     builder: (BuildContext context) {
@@ -62,9 +63,7 @@ void customDialogFailed(String titulo, String descripcion) {
                 child: CustomButtonColor(
                     color: Color(0xFFF15249),
                     buttonText: 'Aceptar',
-                    onPressed: () {
-                      Get.back();
-                    }),
+                    onPressed: onPressed),
               )
             ],
           ),
@@ -189,4 +188,45 @@ void customDialogEmail(String titulo, String descripcion, Function()? onPressed,
       );
     },
   );
+}
+
+void customDialogWidgtes(
+    String titulo, String descripcion, List<Widget> children) {
+  showDialog(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return Dialog(
+          alignment: Alignment.center,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(titulo,
+                    style: GoogleFonts.roboto(
+                        fontSize: 27,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.green)),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(descripcion,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.roboto(
+                        fontSize: 16, fontWeight: FontWeight.w500)),
+                const SizedBox(
+                  height: 20,
+                ),
+                ...children,
+              ],
+            ),
+          ),
+        );
+      });
 }

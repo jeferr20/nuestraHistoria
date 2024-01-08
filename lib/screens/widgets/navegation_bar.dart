@@ -42,7 +42,8 @@ class _CustomNavegationBarState extends State<CustomNavegationBar> {
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.book)),
         BottomNavigationBarItem(icon: Icon(Icons.home)),
-        BottomNavigationBarItem(icon: Icon(Icons.settings))
+        BottomNavigationBarItem(icon: Icon(Icons.settings)),
+        BottomNavigationBarItem(icon: Icon(Icons.calendar_today))
       ],
       selectedLabelStyle: const TextStyle(fontSize: 14),
       unselectedLabelStyle: const TextStyle(fontSize: 10),

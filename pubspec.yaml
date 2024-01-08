@@ -50,6 +50,9 @@ dependencies:
   flutter_snake_navigationbar: ^0.6.1
   dropdown_button2: ^2.3.9
   firebase_messaging: ^14.7.9
+  table_calendar: ^3.0.9
+  card_swiper: ^3.0.1
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +80,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/categories/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -48,6 +48,8 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     CustomTextField(
+                      colorFondo: Colors.black38,
+                      fuente: Colors.white,
                       controller: mailController,
                       text: 'Correo Electronico',
                       prefixIcon: Icons.mail,

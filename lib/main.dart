@@ -15,7 +15,6 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseApi().initNotification();
-
   Get.put(AuthController());
 
   runApp(const GetMaterialApp(
