@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:nuestra_historia/controller/citas_controller.dart';
 import 'package:nuestra_historia/models/datoRptaCita_model.dart';
+import 'package:nuestra_historia/screens/widgets/widgets.dart';
 import 'package:nuestra_historia/utils/calendar_util.dart';
 import 'package:nuestra_historia/screens/widgets/buttons.dart';
 import 'package:nuestra_historia/screens/widgets/dialog.dart';
@@ -107,7 +106,7 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
                               () => Swiper(
                                 itemBuilder: (BuildContext context, int index) {
                                   if (listaFotosString.isEmpty) {
-                                    return GestureDetector(
+                                    return ItemAddImagen(
                                       onTap: () async {
                                         List<XFile>? selectedImages;
                                         final images = await pickImages(
@@ -119,81 +118,18 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
                                           setState(() {});
                                         }
                                       },
-                                      child: Container(
-                                          color: Colors.grey,
-                                          height: 150,
-                                          width: 150,
-                                          child: const Icon(Icons.add)),
                                     );
                                   } else {
                                     String imagePath = listaFotosString[index];
-
-                                    // Verificar si la imagen es una URL (de internet) o una ruta local
-                                    if (imagePath.startsWith('http')) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.16),
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            Center(
-                                              child: Image.network(
-                                                imagePath,
-                                                fit: BoxFit.fitHeight,
-                                              ),
-                                            ),
-                                            Positioned(
-                                                top: 0,
-                                                right: 0,
-                                                child: IconButton(
-                                                  onPressed: () {},
-                                                  icon: Icon(
-                                                    Icons.delete_forever,
-                                                    color: Colors.red,
-                                                    size: 20,
-                                                  ),
-                                                )),
-                                          ],
-                                        ),
-                                      );
-                                    } else {
-                                      // Mostrar imagen local
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.16),
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            Center(
-                                                child: Image.file(
-                                              File(imagePath),
-                                              fit: BoxFit.fitHeight,
-                                            )),
-                                            Positioned(
-                                                top: 0,
-                                                right: 0,
-                                                child: IconButton(
-                                                  onPressed: () {},
-                                                  icon: Icon(
-                                                    Icons.delete_forever,
-                                                    color: Colors.red,
-                                                    size: 20,
-                                                  ),
-                                                )),
-                                          ],
-                                        ),
-                                      );
-                                    }
+                                    return ItemImagenCita(
+                                      imagePath: imagePath,
+                                      onPressed: () {},
+                                    );
                                   }
                                 },
                                 itemCount: listaFotosString.isEmpty
                                     ? 1
                                     : listaFotosString.length,
-                                // viewportFraction: viewportFraction.value,
                                 viewportFraction: 0.5,
                                 scale: 0.8,
                                 pagination: const SwiperPagination(),

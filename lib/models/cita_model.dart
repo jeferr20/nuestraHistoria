@@ -26,9 +26,7 @@ class Cita {
 }
 
 class CategoriaCitas {
-  CategoriaCitas(
-      {required this.categoria, this.isExpanded = false, required this.citas});
+  CategoriaCitas({required this.categoria, required this.citas});
   String categoria;
-  bool isExpanded;
   List<Cita> citas;
 }

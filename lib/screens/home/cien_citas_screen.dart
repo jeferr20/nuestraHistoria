@@ -14,22 +14,22 @@ class CienCitasScreen extends StatefulWidget {
 }
 
 class _CienCitasScreenState extends State<CienCitasScreen> {
+  PageController pageController = PageController();
   final citasController = Get.put(CitasController());
   final mMasterSession = Get.find<MasterSessionController>();
   List<CategoriaCitas> citaxcategoria = [];
   List<String> citasRealizadasIDS = [];
-  bool _isMounted = false;
+  RxInt estado = 0.obs;
 
   @override
   void initState() {
     super.initState();
-    _isMounted = true;
     ever(mMasterSession.currentRelacion, (callback) => loadCitasData());
   }
 
   @override
   void dispose() {
-    _isMounted = false;
+    pageController.dispose();
     super.dispose();
   }
 
@@ -52,12 +52,10 @@ class _CienCitasScreenState extends State<CienCitasScreen> {
       setState(() {
         citaxcategoria = categoriasOrdenadas.map((categoria) {
           List<Cita> citasCategoria = citasPorCategoria[categoria]!;
-          int index = categoriasOrdenadas.indexOf(categoria);
 
           return CategoriaCitas(
             categoria: categoria,
             citas: citasCategoria,
-            isExpanded: index == 0,
           );
         }).toList();
       });
@@ -70,6 +68,23 @@ class _CienCitasScreenState extends State<CienCitasScreen> {
     return citasRealizadasIDS.contains(cita.id);
   }
 
+  List<Cita> obtenerCitasMostrar() {
+    if (estado.value == 0) {
+      // Mostrar todas las citas
+      return citaxcategoria.expand((item) => item.citas).toList();
+    } else if (estado.value == 1) {
+      // Mostrar citas realizadas
+      return citaxcategoria
+          .expand((item) => item.citas.where((cita) => isCitaRealizada(cita)))
+          .toList();
+    } else {
+      // Mostrar citas pendientes
+      return citaxcategoria
+          .expand((item) => item.citas.where((cita) => !isCitaRealizada(cita)))
+          .toList();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,27 +95,57 @@ class _CienCitasScreenState extends State<CienCitasScreen> {
           child: Column(
             children: [
               const Text("Nuestras citas"),
-              const Text("Clasico"),
-              const Text("Nuestras citas"),
-              const Text("Clasico"),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: ExpansionPanelList(
-                    elevation: 0,
-                    expansionCallback: (int panelIndex, bool isExpanded) {
-                      setState(() {
-                        citaxcategoria[panelIndex].isExpanded = isExpanded;
-                      });
+              const Text("Categorias: "),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: citaxcategoria.map((CategoriaCitas item) {
+                    return ItemCategoriaCita(
+                      onTap: () {
+                        pageController.animateToPage(
+                          citaxcategoria.indexOf(item),
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      texto: item.categoria,
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ItemFiltroCita(
+                    texto: 'Todos',
+                    onTap: () {
+                      estado.value = 0;
                     },
-                    children: citaxcategoria
-                        .map<ExpansionPanel>((CategoriaCitas item) {
-                      return ExpansionPanel(
-                          headerBuilder: (context, isExpanded) {
-                            return ListTile(
-                              title: Text(item.categoria),
-                            );
-                          },
-                          body: Column(
+                  ),
+                  ItemFiltroCita(
+                    texto: 'Realizados',
+                    onTap: () {
+                      estado.value = 1;
+                    },
+                  ),
+                  ItemFiltroCita(
+                    texto: 'Pendientes',
+                    onTap: () {
+                      estado.value = 2;
+                    },
+                  ),
+                ],
+              ),
+              Obx(() => Expanded(
+                    child: PageView(
+                      controller: pageController,
+                      children: citaxcategoria.map((CategoriaCitas item) {
+                        if(estado.value==0){
+                          return SingleChildScrollView(
+                          child: Column(
                             children: item.citas
                                 .map((e) => ItemCita(
                                       showCheck: isCitaRealizada(e),
@@ -114,11 +159,82 @@ class _CienCitasScreenState extends State<CienCitasScreen> {
                                     ))
                                 .toList(),
                           ),
-                          isExpanded: item.isExpanded);
-                    }).toList(),
-                  ),
-                ),
-              )
+                        );
+                        }else if(estado.value==1){
+return SingleChildScrollView(
+                          child: Column(
+                            children: item.citas
+                                .map((e) => ItemCita(
+                                      showCheck: isCitaRealizada(e),
+                                      cita: e,
+                                      onTap: () {
+                                        mMasterSession.currentCita.value = e;
+                                        Get.to(() => RegistrarCitaScreen(
+                                              isChecked: isCitaRealizada(e),
+                                            ));
+                                      },
+                                    ))
+                                .toList(),
+                          ),
+                        );
+                        }else{
+return SingleChildScrollView(
+                          child: Column(
+                            children: item.citas
+                                .map((e) => ItemCita(
+                                      showCheck: isCitaRealizada(e),
+                                      cita: e,
+                                      onTap: () {
+                                        mMasterSession.currentCita.value = e;
+                                        Get.to(() => RegistrarCitaScreen(
+                                              isChecked: isCitaRealizada(e),
+                                            ));
+                                      },
+                                    ))
+                                .toList(),
+                          ),
+                        );
+                        }
+                        
+                      }).toList(),
+                    ),
+                  ))
+              //   Expanded(
+              //     child: SingleChildScrollView(
+              //       child: ExpansionPanelList(
+              //         elevation: 0,
+              //         expansionCallback: (int panelIndex, bool isExpanded) {
+              //           setState(() {
+              //             citaxcategoria[panelIndex].isExpanded = isExpanded;
+              //           });
+              //         },
+              //         children: citaxcategoria
+              //             .map<ExpansionPanel>((CategoriaCitas item) {
+              //           return ExpansionPanel(
+              //               headerBuilder: (context, isExpanded) {
+              //                 return ListTile(
+              //                   title: Text(item.categoria),
+              //                 );
+              //               },
+              //               body: Column(
+              //                 children: item.citas
+              //                     .map((e) => ItemCita(
+              //                           showCheck: isCitaRealizada(e),
+              //                           cita: e,
+              //                           onTap: () {
+              //                             mMasterSession.currentCita.value = e;
+              //                             Get.to(() => RegistrarCitaScreen(
+              //                                   isChecked: isCitaRealizada(e),
+              //                                 ));
+              //                           },
+              //                         ))
+              //                     .toList(),
+              //               ),
+              //               isExpanded: item.isExpanded);
+              //         }).toList(),
+              //       ),
+              //     ),
+              //   )
             ],
           ),
         ),

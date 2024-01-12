@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -194,6 +196,134 @@ class ItemCita extends StatelessWidget {
               }
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class ItemAddImagen extends StatefulWidget {
+  final Function()? onTap;
+  const ItemAddImagen({super.key, this.onTap});
+
+  @override
+  State<ItemAddImagen> createState() => _ItemAddImagenState();
+}
+
+class _ItemAddImagenState extends State<ItemAddImagen> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+          color: Colors.grey,
+          height: 150,
+          width: 150,
+          child: const Icon(Icons.add)),
+    );
+  }
+}
+
+class ItemImagenCita extends StatefulWidget {
+  final String imagePath;
+  final void Function()? onPressed;
+  const ItemImagenCita({super.key, required this.imagePath, this.onPressed});
+
+  @override
+  State<ItemImagenCita> createState() => _ItemImagenCitaState();
+}
+
+class _ItemImagenCitaState extends State<ItemImagenCita> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.16),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Stack(
+        children: [
+          Center(
+              child: widget.imagePath.startsWith('http')
+                  ? Image.network(
+                      widget.imagePath,
+                      fit: BoxFit.fitHeight,
+                    )
+                  : Image.file(
+                      File(widget.imagePath),
+                      fit: BoxFit.fitHeight,
+                    )),
+          Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton(
+                onPressed: widget.onPressed,
+                icon: const Icon(
+                  Icons.delete_forever,
+                  color: Colors.red,
+                  size: 20,
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+}
+
+class ItemCategoriaCita extends StatelessWidget {
+  final String texto;
+  final Function()? onTap;
+  const ItemCategoriaCita({super.key, required this.texto, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 4,
+        ),
+        width: Get.width * 0.3,
+        height: 50,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: Colors.red, // Color del borde
+            width: 2.0, // Ancho del borde
+          ),
+        ),
+        child: Center(
+          child: Text(texto),
+        ),
+      ),
+    );
+  }
+}
+
+class ItemFiltroCita extends StatelessWidget {
+  final String texto;
+  final Function()? onTap;
+  const ItemFiltroCita({super.key, required this.texto, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        width: Get.width * 0.28,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: Colors.red, // Color del borde
+            width: 2.0, // Ancho del borde
+          ),
+        ),
+        child: Center(
+          child: Text(texto),
         ),
       ),
     );
