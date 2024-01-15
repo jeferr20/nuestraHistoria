@@ -2,6 +2,7 @@ class Cita {
   String id;
   String cita;
   String categoria;
+  bool? estado;
 
   Cita({
     this.id = "",
@@ -25,8 +26,8 @@ class Cita {
   }
 }
 
-class CategoriaCitas {
-  CategoriaCitas({required this.categoria, required this.citas});
-  String categoria;
-  List<Cita> citas;
-}
+// class CategoriaCitas {
+//   CategoriaCitas({required this.categoria, required this.citas});
+//   String categoria;
+//   List<Cita> citas;
+// }

@@ -10,6 +10,7 @@ class MasterSessionController extends GetxController {
   var currentUsuarioPareja = Usuario().obs;
   var currentUsuarioTemp = Usuario().obs;
   var currentCita = Cita().obs;
+  var fmcToken = "".obs;
 
   void listenToUserChanges(String userId) {
     FirebaseFirestore.instance

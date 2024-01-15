@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nuestra_historia/screens/login/register_correo_screen.dart';
 import 'package:nuestra_historia/screens/widgets/buttons.dart';
 import 'package:nuestra_historia/screens/widgets/textfield.dart';
+import 'package:nuestra_historia/styles/colors.dart';
 
 import '../../controller/auth_controller.dart';
 
@@ -20,9 +21,9 @@ class LoginScreen extends StatelessWidget {
         body: SingleChildScrollView(
       child: Container(
         height: Get.height,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xffbfe9ff), Color(0xffff6e7f)],
+            colors: [Colores.colorAzulPrincipal, Colores.colorRosaPrincipal],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -41,14 +42,11 @@ class LoginScreen extends StatelessWidget {
                 ),
                 child: Image.asset('assets/logo.png'),
               ),
-              // const SizedBox(
-              //   height: 32,
-              // ),
               SizedBox(
                 child: Column(
                   children: [
                     CustomTextField(
-                      colorFondo: Colors.black38,
+                      colorFondo: Colors.white.withOpacity(0.3),
                       fuente: Colors.white,
                       controller: mailController,
                       text: 'Correo Electronico',

@@ -133,8 +133,11 @@ class CitasController extends GetxController {
     try {
       for (String imagePath in imagePaths) {
         final String nombreArchivo = imagePath.split("/").last;
-        final Reference ref =
-            storage.ref().child("imagenesCita$citaId").child(nombreArchivo);
+        final Reference ref = storage
+            .ref()
+            .child("imagenesCitas")
+            .child(mMasterSession.currentRelacion.value.id)
+            .child(nombreArchivo);
         final UploadTask uploadTask = ref.putFile(File(imagePath));
 
         final TaskSnapshot snapshot = await uploadTask;

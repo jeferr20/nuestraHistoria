@@ -9,7 +9,7 @@ class CalendarioScreen extends StatefulWidget {
 }
 
 class _CalendarioScreenState extends State<CalendarioScreen> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  final CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   late DateTime _selectedDay = DateTime.now();
   @override
@@ -37,10 +37,9 @@ class _CalendarioScreenState extends State<CalendarioScreen> {
               _focusedDay = focusedDay;
             });
           },
-          calendarStyle: CalendarStyle(
-            // Puedes personalizar la apariencia del calendario aquí
+          calendarStyle: const CalendarStyle(
             todayDecoration: BoxDecoration(
-              color: Colors.blueAccent,
+              color: Colors.red,
               shape: BoxShape.circle,
             ),
             selectedDecoration: BoxDecoration(
@@ -56,7 +55,7 @@ class _CalendarioScreenState extends State<CalendarioScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          headerStyle: HeaderStyle(
+          headerStyle: const HeaderStyle(
             titleCentered: true,
             formatButtonVisible: false,
           ),

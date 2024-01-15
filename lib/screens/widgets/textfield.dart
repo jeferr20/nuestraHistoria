@@ -35,7 +35,7 @@ class CustomTextField extends StatelessWidget {
           onChanged: onChanged,
           controller: controller,
           textAlign: maxLength == 1 ? TextAlign.center : TextAlign.justify,
-          cursorColor: Colors.deepOrange,
+          cursorColor: Colors.grey,
           decoration: InputDecoration(
             counterText: '',
             hintText: text,
@@ -93,7 +93,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
       },
       controller: widget.controller,
       obscureText: passwordVisible,
-      cursorColor: Colors.deepOrange,
+      cursorColor: Colors.grey,
       decoration: InputDecoration(
         hintText: widget.text,
         contentPadding: const EdgeInsets.all(20),

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:nuestra_historia/controller/citas_controller.dart';
 import 'package:nuestra_historia/models/datoRptaCita_model.dart';
 import 'package:nuestra_historia/screens/widgets/widgets.dart';
+import 'package:nuestra_historia/styles/colors.dart';
 import 'package:nuestra_historia/utils/calendar_util.dart';
 import 'package:nuestra_historia/screens/widgets/buttons.dart';
 import 'package:nuestra_historia/screens/widgets/dialog.dart';
@@ -70,7 +71,7 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
       rethrow;
     } finally {
       if (mounted) {
-        Future.delayed(const Duration(milliseconds: 2), () {
+        Future.delayed(const Duration(milliseconds: 10), () {
           isLoading.value = false;
         });
       }
@@ -90,7 +91,7 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.amber,
+      backgroundColor: Colores.colorFondo,
       body: SafeArea(
           child: Obx(() => Stack(
                 children: [
@@ -109,8 +110,7 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
                                     return ItemAddImagen(
                                       onTap: () async {
                                         List<XFile>? selectedImages;
-                                        final images = await pickImages(
-                                            ImageSource.gallery);
+                                        final images = await pickImages();
                                         if (images != null) {
                                           selectedImages = images;
                                           listaFotosString.addAll(selectedImages
@@ -123,7 +123,6 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
                                     String imagePath = listaFotosString[index];
                                     return ItemImagenCita(
                                       imagePath: imagePath,
-                                      onPressed: () {},
                                     );
                                   }
                                 },

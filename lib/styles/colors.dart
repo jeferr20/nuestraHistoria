@@ -17,3 +17,9 @@ class ColoresCitas {
   static Color citasDeViaje = const Color(0xFF40E0D0).withOpacity(0.5);
   static Color citasNostalgicas = const Color(0xFF704214).withOpacity(0.5);
 }
+
+class Colores {
+  static Color colorFondo = const Color(0xFFF5F5DC);
+  static Color colorAzulPrincipal = const Color(0xFF67A5FD);
+  static Color colorRosaPrincipal = const Color(0xFFFF638A);
+}

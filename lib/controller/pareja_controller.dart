@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:nuestra_historia/controller/auth_controller.dart';
 import 'package:nuestra_historia/controller/mastersession_controller.dart';
 import 'package:nuestra_historia/models/relacion_model.dart';
-import 'package:nuestra_historia/screens/home/home_screen.dart';
+import 'package:nuestra_historia/screens/home/main_screen.dart';
 import 'package:nuestra_historia/screens/widgets/dialog.dart';
 
 class ParejaController extends GetxController {
@@ -63,7 +63,7 @@ class ParejaController extends GetxController {
           }
           hideLoadingDialog();
           customDialogExito('Felicidad', 'Todo correcto', () {
-            Get.to(() => const HomeScreen());
+            Get.to(() => const MainScreen());
           });
         } else {
           hideLoadingDialog();
@@ -89,7 +89,8 @@ class ParejaController extends GetxController {
           .update({'aniversario': fecha});
       hideLoadingDialog();
       customDialogExito('Felicidad', 'Se guardo la fecha', () {
-        Get.to(() => const HomeScreen());
+        Get.back();
+        Get.back();
       });
     } catch (error) {
       hideLoadingDialog();

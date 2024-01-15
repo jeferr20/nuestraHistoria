@@ -5,15 +5,15 @@ class Usuario {
   String apellidos;
   String celular;
   String genero;
-  int edad = 0;
+  int edad;
   String fechaNacimiento;
-  String signoz;
   bool isVerified;
   String? urlPerfil;
   String? password;
   String? confirmPassword;
   String? relacionId;
   String? parejaId;
+  String? fcmToken;
 
   Usuario(
       {this.id = "",
@@ -24,13 +24,13 @@ class Usuario {
       this.genero = "",
       this.edad = 0,
       this.fechaNacimiento = "",
-      this.signoz = "",
       this.isVerified = false,
       this.urlPerfil,
       this.password,
       this.confirmPassword,
       this.relacionId,
-      this.parejaId});
+      this.parejaId,
+      this.fcmToken});
 
   Map<String, dynamic> toMap() {
     return {
@@ -41,11 +41,11 @@ class Usuario {
       'genero': genero,
       'edad': edad,
       'fechaNacimiento': fechaNacimiento,
-      'signoz': signoz,
       'isVerified': isVerified,
       'urlPerfil': urlPerfil,
       'relacionId': relacionId,
       'parejaId': parejaId,
+      'fcmToken': fcmToken
     };
   }
 
@@ -60,10 +60,10 @@ class Usuario {
       edad: json['edad'] ?? 0,
       fechaNacimiento: json['fechaNacimiento'] ?? "",
       isVerified: json['isVerified'] ?? false,
-      signoz: json['signoz'] ?? "",
       urlPerfil: json['urlPerfil'] ?? "",
       relacionId: json['relacionId'] ?? "",
       parejaId: json['parejaId'] ?? "",
+      fcmToken: json['fcmToken'] ?? "",
     );
   }
 }

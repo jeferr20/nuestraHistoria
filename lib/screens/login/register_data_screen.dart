@@ -109,10 +109,8 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                         val?.celular = celularController.text.toString();
                         val?.fechaNacimiento = fechaController.text.toString();
                         val?.edad = calcularEdad(selectedDate);
-                        val?.signoz = obtenerSignoZodiacal(selectedDate);
                         val?.genero = genero!;
                       });
-                      // Get.to(() => VerificationScreen());
                       await authController.registrarUsuario(
                           mMasterSession.currentUsuarioTemp.value);
                     },

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +14,7 @@ class CardHeader extends StatefulWidget {
   final Usuario usuario;
   final Usuario? pareja;
   final Relacion? relacion;
+  final Function()? ontap1;
   final Function()? ontap2;
   const CardHeader({
     super.key,
@@ -20,6 +22,7 @@ class CardHeader extends StatefulWidget {
     this.pareja,
     this.ontap2,
     this.relacion,
+    this.ontap1,
   });
 
   @override
@@ -32,7 +35,7 @@ class _CardHeaderState extends State<CardHeader> {
     return Card(
       elevation: 6.0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(35),
+        borderRadius: BorderRadius.circular(30),
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -40,30 +43,40 @@ class _CardHeaderState extends State<CardHeader> {
         height: Get.height * 0.175,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(35),
+          borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: Get.width * 0.25,
-                  height: Get.width * 0.25,
-                  decoration: BoxDecoration(
-                      color: Colors.pink,
-                      borderRadius: BorderRadius.circular(100)),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  widget.usuario.nombres,
-                  style: GoogleFonts.roboto(fontSize: 15),
-                ),
-              ],
+            SizedBox(
+              width: Get.width * 0.25,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: widget.ontap1,
+                    child: SizedBox(
+                        width: Get.width * 0.25,
+                        height: Get.width * 0.25,
+                        child: CircleAvatar(
+                          backgroundColor: ColoresCitas.citasTematicas,
+                          backgroundImage: widget.usuario.urlPerfil != null &&
+                                  widget.usuario.urlPerfil!.isNotEmpty
+                              ? NetworkImage(widget.usuario.urlPerfil!)
+                              : null,
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  AutoSizeText(
+                    widget.usuario.nombres.split(" ").first,
+                    maxLines: 1,
+                    style: GoogleFonts.roboto(fontSize: 15),
+                  ),
+                ],
+              ),
             ),
             Expanded(
                 child: Column(
@@ -84,25 +97,34 @@ class _CardHeaderState extends State<CardHeader> {
                 )
               ],
             )),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: widget.ontap2,
-                  child: Container(
-                    width: Get.width * 0.25,
-                    height: Get.width * 0.25,
-                    decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(100)),
+            SizedBox(
+              width: Get.width * 0.25,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: widget.ontap2,
+                    child: SizedBox(
+                        width: Get.width * 0.25,
+                        height: Get.width * 0.25,
+                        child: CircleAvatar(
+                          backgroundColor: ColoresCitas.citasDeViaje,
+                          backgroundImage: widget.pareja!.urlPerfil != null &&
+                                  widget.pareja!.urlPerfil!.isNotEmpty
+                              ? NetworkImage(widget.pareja!.urlPerfil!)
+                              : null,
+                        )),
                   ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Text(widget.pareja == null ? "" : widget.pareja!.nombres,
-                    style: GoogleFonts.roboto(fontSize: 15)),
-              ],
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                      widget.pareja == null
+                          ? ""
+                          : widget.pareja!.nombres.split(" ").first,
+                      style: GoogleFonts.roboto(fontSize: 15)),
+                ],
+              ),
             ),
           ],
         ),
@@ -133,11 +155,11 @@ class ItemCita extends StatelessWidget {
         break;
       case "Aventuras al aire libre":
         color = ColoresCitas.aventurasAireLibre;
-        imagen = 'assets/categories/reloj.png';
+        imagen = 'assets/categories/sol.png';
         break;
       case "Citas culturales":
         color = ColoresCitas.citasCulturales;
-        imagen = 'assets/categories/reloj.png';
+        imagen = 'assets/categories/paleta.png';
         break;
     }
     return GestureDetector(
@@ -273,31 +295,41 @@ class _ItemImagenCitaState extends State<ItemImagenCita> {
 class ItemCategoriaCita extends StatelessWidget {
   final String texto;
   final Function()? onTap;
-  const ItemCategoriaCita({super.key, required this.texto, this.onTap});
+  final bool isPressed;
+  const ItemCategoriaCita(
+      {super.key, required this.texto, this.onTap, required this.isPressed});
 
   @override
   Widget build(BuildContext context) {
+    Color color = isPressed ? Colors.green : Colors.red;
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 4,
-        ),
-        width: Get.width * 0.3,
-        height: 50,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(
-            color: Colors.red, // Color del borde
-            width: 2.0, // Ancho del borde
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 4,
           ),
-        ),
-        child: Center(
-          child: Text(texto),
-        ),
-      ),
+          width: Get.width * 0.3,
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+              color: color,
+              width: 2.0,
+            ),
+          ),
+          child: Center(
+            child: AutoSizeText(
+              texto,
+              maxLines: 2,
+              style: GoogleFonts.roboto(
+                  fontSize: 15,
+                  fontWeight: isPressed ? FontWeight.bold : FontWeight.normal),
+              textAlign: TextAlign.center,
+            ),
+          )),
     );
   }
 }
@@ -305,27 +337,37 @@ class ItemCategoriaCita extends StatelessWidget {
 class ItemFiltroCita extends StatelessWidget {
   final String texto;
   final Function()? onTap;
-  const ItemFiltroCita({super.key, required this.texto, this.onTap});
+  final bool isPressed;
+  const ItemFiltroCita(
+      {super.key, required this.texto, this.onTap, required this.isPressed});
 
   @override
   Widget build(BuildContext context) {
+    Color color = isPressed ? Colors.green : Colors.red;
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        width: Get.width * 0.28,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(
-            color: Colors.red, // Color del borde
-            width: 2.0, // Ancho del borde
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          width: Get.width * 0.28,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+              color: color, // Color del borde
+              width: 2.0, // Ancho del borde
+            ),
           ),
-        ),
-        child: Center(
-          child: Text(texto),
-        ),
-      ),
+          child: Center(
+            child: AutoSizeText(
+              texto,
+              maxLines: 1,
+              style: GoogleFonts.roboto(
+                  fontSize: 15,
+                  fontWeight: isPressed ? FontWeight.bold : FontWeight.normal),
+              textAlign: TextAlign.center,
+            ),
+          )),
     );
   }
 }

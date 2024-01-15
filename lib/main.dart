@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:nuestra_historia/controller/auth_controller.dart';
 import 'package:nuestra_historia/fcm/firebase_api.dart';
 import 'package:nuestra_historia/firebase_options.dart';
@@ -16,6 +17,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseApi().initNotification();
   Get.put(AuthController());
+  await GetStorage.init();
 
   runApp(const GetMaterialApp(
     localizationsDelegates: [

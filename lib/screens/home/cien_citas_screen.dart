@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nuestra_historia/controller/citas_controller.dart';
 import 'package:nuestra_historia/controller/mastersession_controller.dart';
 import 'package:nuestra_historia/models/cita_model.dart';
 import 'package:nuestra_historia/screens/grupo/cita_dato_screen.dart';
 import 'package:nuestra_historia/screens/widgets/widgets.dart';
+import 'package:nuestra_historia/styles/colors.dart';
 
 class CienCitasScreen extends StatefulWidget {
   const CienCitasScreen({super.key});
@@ -14,102 +16,129 @@ class CienCitasScreen extends StatefulWidget {
 }
 
 class _CienCitasScreenState extends State<CienCitasScreen> {
-  PageController pageController = PageController();
   final citasController = Get.put(CitasController());
   final mMasterSession = Get.find<MasterSessionController>();
-  List<CategoriaCitas> citaxcategoria = [];
-  List<String> citasRealizadasIDS = [];
+  RxList<Cita> allCitas = <Cita>[].obs;
+  RxList<Cita> citasFiltradas = <Cita>[].obs;
+  List<String> categorias = [];
   RxInt estado = 0.obs;
+  RxString categoriaSeleccionada = "Todas".obs;
+  RxString mensajeError = "".obs;
 
   @override
   void initState() {
     super.initState();
-    ever(mMasterSession.currentRelacion, (callback) => loadCitasData());
-  }
-
-  @override
-  void dispose() {
-    pageController.dispose();
-    super.dispose();
+    ever(mMasterSession.currentRelacion, (callback) => {loadCitasData()});
   }
 
   Future<void> loadCitasData() async {
     try {
-      List<Cita> citas = await citasController.getListadoCita();
-      citasRealizadasIDS = await citasController.getCitasRealizadas();
+      allCitas.value = await citasController.getListadoCita();
 
-      Map<String, List<Cita>> citasPorCategoria = {};
-
-      for (Cita cita in citas) {
-        if (!citasPorCategoria.containsKey(cita.categoria)) {
-          citasPorCategoria[cita.categoria] = [];
-        }
-        citasPorCategoria[cita.categoria]!.add(cita);
+      categorias = await obtenerCategoriasUnicas(allCitas);
+      categorias.insert(0, "Todas");
+      List<String> citasRealizadasIDS =
+          await citasController.getCitasRealizadas();
+      for (var cita in allCitas) {
+        cita.estado = citasRealizadasIDS.contains(cita.id);
       }
-      List<String> categoriasOrdenadas = citasPorCategoria.keys.toList()
-        ..sort();
-
-      setState(() {
-        citaxcategoria = categoriasOrdenadas.map((categoria) {
-          List<Cita> citasCategoria = citasPorCategoria[categoria]!;
-
-          return CategoriaCitas(
-            categoria: categoria,
-            citas: citasCategoria,
-          );
-        }).toList();
-      });
+      if (estado.value == 0 && categoriaSeleccionada.value == "") {
+        citasFiltradas.assignAll(allCitas);
+      } else {
+        filtrarPorCategoria(categoriaSeleccionada.value, estado.value);
+      }
+      setState(() {});
     } catch (error) {
       rethrow;
     }
   }
 
-  bool isCitaRealizada(Cita cita) {
-    return citasRealizadasIDS.contains(cita.id);
+  void filtrarPorCategoria(String categoria, int estado) {
+    if (categoria == "Todas") {
+      if (estado == 0) {
+        citasFiltradas.assignAll(allCitas
+            .where((cita) => cita.estado == true || cita.estado == false)
+            .toList());
+      } else if (estado == 1) {
+        citasFiltradas
+            .assignAll(allCitas.where((cita) => cita.estado == true).toList());
+      } else if (estado == 2) {
+        citasFiltradas
+            .assignAll(allCitas.where((cita) => cita.estado == false).toList());
+      }
+    } else {
+      if (estado == 0) {
+        citasFiltradas.assignAll(
+            allCitas.where((cita) => cita.categoria == categoria).toList());
+      } else if (estado == 1) {
+        citasFiltradas.assignAll(allCitas
+            .where((cita) => cita.categoria == categoria && cita.estado == true)
+            .toList());
+      } else if (estado == 2) {
+        citasFiltradas.assignAll(allCitas
+            .where(
+                (cita) => cita.categoria == categoria && cita.estado == false)
+            .toList());
+      }
+    }
+    if (categoria == "Todas") {
+      if (estado == 1) {
+        mensajeError.value = "No haz completado ninguna cita";
+      } else if (estado == 2) {
+        mensajeError.value = "Ya haz completado todas las citas";
+      }
+    } else {
+      if (estado == 1) {
+        mensajeError.value =
+            "Aun no haz realizado ninguna cita de la categoría: $categoria";
+      } else if (estado == 2) {
+        mensajeError.value =
+            "Ya has realizado todas las citas de la categoría: $categoria";
+      }
+    }
   }
 
-  List<Cita> obtenerCitasMostrar() {
-    if (estado.value == 0) {
-      // Mostrar todas las citas
-      return citaxcategoria.expand((item) => item.citas).toList();
-    } else if (estado.value == 1) {
-      // Mostrar citas realizadas
-      return citaxcategoria
-          .expand((item) => item.citas.where((cita) => isCitaRealizada(cita)))
-          .toList();
-    } else {
-      // Mostrar citas pendientes
-      return citaxcategoria
-          .expand((item) => item.citas.where((cita) => !isCitaRealizada(cita)))
-          .toList();
+  Future<List<String>> obtenerCategoriasUnicas(List<Cita> citas) async {
+    Set<String> categoriasUnicas = <String>{};
+    for (Cita cita in citas) {
+      categoriasUnicas.add(cita.categoria);
     }
+    return categoriasUnicas.toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colores.colorFondo,
       body: SafeArea(
+        bottom: false,
+        minimum: const EdgeInsets.only(bottom: 70),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
             children: [
-              const Text("Nuestras citas"),
-              const Text("Categorias: "),
+              Text(
+                "Mis Citas",
+                style: GoogleFonts.roboto(
+                    fontSize: 20, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: citaxcategoria.map((CategoriaCitas item) {
-                    return ItemCategoriaCita(
-                      onTap: () {
-                        pageController.animateToPage(
-                          citaxcategoria.indexOf(item),
-                          duration: Duration(milliseconds: 500),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                      texto: item.categoria,
-                    );
+                  children: categorias.map((String categoria) {
+                    return Obx(() => ItemCategoriaCita(
+                          isPressed: categoria == categoriaSeleccionada.value,
+                          texto: categoria,
+                          onTap: () {
+                            categoriaSeleccionada.value = categoria;
+                            filtrarPorCategoria(
+                                categoriaSeleccionada.value, estado.value);
+                            setState(() {});
+                          },
+                        ));
                   }).toList(),
                 ),
               ),
@@ -119,122 +148,65 @@ class _CienCitasScreenState extends State<CienCitasScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ItemFiltroCita(
-                    texto: 'Todos',
-                    onTap: () {
-                      estado.value = 0;
-                    },
+                  Obx(
+                    () => ItemFiltroCita(
+                      texto: 'Todos',
+                      isPressed: estado.value == 0,
+                      onTap: () {
+                        estado.value = 0;
+                        filtrarPorCategoria(
+                            categoriaSeleccionada.value, estado.value);
+                      },
+                    ),
                   ),
-                  ItemFiltroCita(
-                    texto: 'Realizados',
-                    onTap: () {
-                      estado.value = 1;
-                    },
+                  Obx(
+                    () => ItemFiltroCita(
+                      isPressed: estado.value == 1,
+                      texto: 'Realizados',
+                      onTap: () {
+                        estado.value = 1;
+                        filtrarPorCategoria(
+                            categoriaSeleccionada.value, estado.value);
+                      },
+                    ),
                   ),
-                  ItemFiltroCita(
-                    texto: 'Pendientes',
-                    onTap: () {
-                      estado.value = 2;
-                    },
-                  ),
+                  Obx(
+                    () => ItemFiltroCita(
+                      isPressed: estado.value == 2,
+                      texto: 'Pendientes',
+                      onTap: () {
+                        estado.value = 2;
+                        filtrarPorCategoria(
+                            categoriaSeleccionada.value, estado.value);
+                      },
+                    ),
+                  )
                 ],
               ),
+              const SizedBox(
+                height: 12,
+              ),
               Obx(() => Expanded(
-                    child: PageView(
-                      controller: pageController,
-                      children: citaxcategoria.map((CategoriaCitas item) {
-                        if(estado.value==0){
-                          return SingleChildScrollView(
-                          child: Column(
-                            children: item.citas
-                                .map((e) => ItemCita(
-                                      showCheck: isCitaRealizada(e),
-                                      cita: e,
-                                      onTap: () {
-                                        mMasterSession.currentCita.value = e;
-                                        Get.to(() => RegistrarCitaScreen(
-                                              isChecked: isCitaRealizada(e),
-                                            ));
-                                      },
-                                    ))
-                                .toList(),
+                    child: citasFiltradas.isEmpty
+                        ? Center(
+                            child: Text(mensajeError.value),
+                          )
+                        : SingleChildScrollView(
+                            child: Column(
+                                children: citasFiltradas.map((element) {
+                              return ItemCita(
+                                cita: element,
+                                showCheck: element.estado!,
+                                onTap: () {
+                                  mMasterSession.currentCita.value = element;
+                                  Get.to(() => RegistrarCitaScreen(
+                                        isChecked: element.estado!,
+                                      ));
+                                },
+                              );
+                            }).toList()),
                           ),
-                        );
-                        }else if(estado.value==1){
-return SingleChildScrollView(
-                          child: Column(
-                            children: item.citas
-                                .map((e) => ItemCita(
-                                      showCheck: isCitaRealizada(e),
-                                      cita: e,
-                                      onTap: () {
-                                        mMasterSession.currentCita.value = e;
-                                        Get.to(() => RegistrarCitaScreen(
-                                              isChecked: isCitaRealizada(e),
-                                            ));
-                                      },
-                                    ))
-                                .toList(),
-                          ),
-                        );
-                        }else{
-return SingleChildScrollView(
-                          child: Column(
-                            children: item.citas
-                                .map((e) => ItemCita(
-                                      showCheck: isCitaRealizada(e),
-                                      cita: e,
-                                      onTap: () {
-                                        mMasterSession.currentCita.value = e;
-                                        Get.to(() => RegistrarCitaScreen(
-                                              isChecked: isCitaRealizada(e),
-                                            ));
-                                      },
-                                    ))
-                                .toList(),
-                          ),
-                        );
-                        }
-                        
-                      }).toList(),
-                    ),
                   ))
-              //   Expanded(
-              //     child: SingleChildScrollView(
-              //       child: ExpansionPanelList(
-              //         elevation: 0,
-              //         expansionCallback: (int panelIndex, bool isExpanded) {
-              //           setState(() {
-              //             citaxcategoria[panelIndex].isExpanded = isExpanded;
-              //           });
-              //         },
-              //         children: citaxcategoria
-              //             .map<ExpansionPanel>((CategoriaCitas item) {
-              //           return ExpansionPanel(
-              //               headerBuilder: (context, isExpanded) {
-              //                 return ListTile(
-              //                   title: Text(item.categoria),
-              //                 );
-              //               },
-              //               body: Column(
-              //                 children: item.citas
-              //                     .map((e) => ItemCita(
-              //                           showCheck: isCitaRealizada(e),
-              //                           cita: e,
-              //                           onTap: () {
-              //                             mMasterSession.currentCita.value = e;
-              //                             Get.to(() => RegistrarCitaScreen(
-              //                                   isChecked: isCitaRealizada(e),
-              //                                 ));
-              //                           },
-              //                         ))
-              //                     .toList(),
-              //               ),
-              //               isExpanded: item.isExpanded);
-              //         }).toList(),
-              //       ),
-              //     ),
-              //   )
             ],
           ),
         ),
