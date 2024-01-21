@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:nuestra_historia/controller/auth_controller.dart';
 import 'package:nuestra_historia/controller/mastersession_controller.dart';
+import 'package:nuestra_historia/controller/notificaciones_controller.dart';
 import 'package:nuestra_historia/controller/pareja_controller.dart';
 import 'package:nuestra_historia/screens/grupo/codigo_grupo_screen.dart';
 import 'package:nuestra_historia/services/images_services.dart';
@@ -21,6 +22,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final authController = Get.find<AuthController>();
+  final mMasterSession = Get.find<MasterSessionController>();
+  final parejaController = Get.put(ParejaController());
+  final notiController = Get.put(NotificacionController());
   final fechaController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   Future<void> showCalendario(BuildContext context) async {
@@ -35,10 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authController = Get.find<AuthController>();
-    final mMasterSession = Get.find<MasterSessionController>();
-    final parejaController = Get.put(ParejaController());
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -83,12 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                 },
               ),
-            ),
-            CustomButton(
-              text: 'Cerrar',
-              onPressed: () {
-                authController.logOut();
-              },
             ),
           ],
         )),

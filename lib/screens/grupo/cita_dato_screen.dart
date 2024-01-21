@@ -1,6 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:nuestra_historia/controller/citas_controller.dart';
@@ -31,8 +32,20 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
     false.obs,
     false.obs
   ];
+  List<RxBool> starColors = [
+    false.obs,
+    false.obs,
+    false.obs,
+    false.obs,
+    false.obs
+  ];
+
   int nCorazonesUsuario = 0;
   int intCorazonesPrevios = 0;
+
+  int nEstrellasUsuario = 0;
+  int intEstrellasPrevios = 0;
+
   String rptaId = "";
   DateTime selectedDate = DateTime.now();
   final rptaController = TextEditingController();
@@ -42,11 +55,15 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
   DatosRptaCita? rptaPrevia;
   RxList<String> listaFotosString = <String>[].obs;
   RxBool isLoading = false.obs;
+
   @override
   void initState() {
     super.initState();
     if (widget.isChecked) {
       getCita();
+    } else {
+      rptaController.text = "";
+      fechaController.text = DateFormat('dd/MM/yyyy').format(selectedDate);
     }
   }
 
@@ -60,11 +77,16 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
           fechaController.text = rptaPrevia!.fecha;
           rptaController.text = rptaPrevia!.userRpta;
           intCorazonesPrevios = rptaPrevia!.corazones;
+          intEstrellasPrevios = rptaPrevia!.estrellas;
           rptaId = rptaPrevia!.id;
           for (int i = 0; i < intCorazonesPrevios; i++) {
             heartColors[i].value = true;
           }
+          for (int i = 0; i < intEstrellasPrevios; i++) {
+            starColors[i].value = true;
+          }
           nCorazonesUsuario = intCorazonesPrevios;
+          nEstrellasUsuario = intEstrellasPrevios;
         }
       }
     } catch (error) {
@@ -137,22 +159,34 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
                               ),
                             )),
                         Text(
-                            "¿Como se sintieron ${mMasterSession.currentUsuario.value.nombres} y ${mMasterSession.currentUsuarioPareja.value.nombres}?"),
+                            "¿Como se sintieron ${mMasterSession.currentUsuario.value.nombres.split(" ").first} y ${mMasterSession.currentUsuarioPareja.value.nombres.split(" ").first}?",
+                            style: GoogleFonts.poppins(
+                                fontSize: 15, fontWeight: FontWeight.w500)),
                         CustomTextField(
                           text: "Opinion",
                           colorFondo: Colors.red,
                           fuente: Colors.white,
                           controller: rptaController,
                         ),
+                        Text(
+                          "Fecha:",
+                          style: GoogleFonts.poppins(
+                              fontSize: 15, fontWeight: FontWeight.w500),
+                        ),
                         CustomTextField(
                           colorFondo: Colors.black38,
                           fuente: Colors.white,
-                          text: "Fecha Nacimiento",
+                          text: "Fecha",
                           controller: fechaController,
                           enableInput: false,
                           onTap: () {
                             showCalendario(context);
                           },
+                        ),
+                        Text(
+                          "¿Qué tan romántico les pareció?",
+                          style: GoogleFonts.poppins(
+                              fontSize: 15, fontWeight: FontWeight.w500),
                         ),
                         Obx(
                           () => Row(
@@ -186,6 +220,43 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
                             }),
                           ),
                         ),
+                        Text(
+                          "¿Qué tal les pareció la cita?",
+                          style: GoogleFonts.poppins(
+                              fontSize: 15, fontWeight: FontWeight.w500),
+                        ),
+                        Obx(
+                          () => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: List.generate(5, (index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    for (int i = 0; i <= index; i++) {
+                                      starColors[i].value = true;
+                                    }
+                                    for (int i = index + 1;
+                                        i < starColors.length;
+                                        i++) {
+                                      starColors[i].value = false;
+                                    }
+                                    nEstrellasUsuario = index + 1;
+                                  });
+                                },
+                                child: SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: Image.asset(
+                                    'assets/icons/star.png',
+                                    color: starColors[index].value
+                                        ? Colors.amber
+                                        : Colors.black,
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        ),
                         CustomButton(
                             text: "Guardar",
                             onPressed: () async {
@@ -194,6 +265,7 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
                                   final rptaActualizar = DatosRptaCita(
                                       fecha: fechaController.text.toString(),
                                       id: rptaId,
+                                      estrellas: nEstrellasUsuario,
                                       corazones: nCorazonesUsuario,
                                       relacionId: mMasterSession
                                           .currentRelacion.value.id,
@@ -217,6 +289,7 @@ class _RegistrarCitaScreenState extends State<RegistrarCitaScreen> {
                                   showLoadingDialog();
                                   final rptaGuardar = DatosRptaCita(
                                       fecha: fechaController.text.toString(),
+                                      estrellas: nEstrellasUsuario,
                                       corazones: nCorazonesUsuario,
                                       relacionId: mMasterSession
                                           .currentRelacion.value.id,

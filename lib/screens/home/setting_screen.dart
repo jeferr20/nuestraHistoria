@@ -80,7 +80,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    urlImagen.isNotEmpty || urlImagen != null
+                    urlImagen.isNotEmpty
                         ? CircleAvatar(
                             radius: 80,
                             backgroundImage: urlImagen.startsWith('http')
@@ -259,7 +259,20 @@ class _SettingScreenState extends State<SettingScreen> {
                                   () => {Get.back()});
                             }
                           },
-                        ))
+                        )),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    SizedBox(
+                      width: Get.width,
+                      child: CustomButton(
+                        text: 'Cerrar sesión',
+                        onPressed: () {
+                          authController.logOut();
+                          // notiController.sendNoti();
+                        },
+                      ),
+                    ),
                   ],
                 ),
               )

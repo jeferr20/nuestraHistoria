@@ -6,6 +6,7 @@ class DatosRptaCita {
   String? user2ID;
   String userRpta;
   int corazones;
+  int estrellas;
   String fecha;
   List<String>? mediaUrl;
 
@@ -16,6 +17,7 @@ class DatosRptaCita {
     required this.relacionId,
     required this.userRpta,
     required this.corazones,
+    required this.estrellas,
     required this.fecha,
     this.user2ID,
     this.mediaUrl,
@@ -30,6 +32,7 @@ class DatosRptaCita {
       'userRpta': userRpta,
       'mediaUrl': mediaUrl,
       'corazones': corazones,
+      'estrellas': estrellas,
       'fecha': fecha,
     };
   }
@@ -45,6 +48,7 @@ class DatosRptaCita {
       mediaUrl: json['mediaUrl'] ?? [],
       corazones: json['corazones'] ?? 0,
       fecha: json['fecha'] ?? 0,
+      estrellas: json['estrellas'] ?? 0,
     );
   }
 }
